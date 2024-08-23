@@ -1,0 +1,24 @@
+{
+  "name": "node2024",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "build": "swc src -d build",
+    "start": "node build/index.js",
+    "dev": "nodemon --exec tsx src/index.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "^1.7.14",
+    "@types/node": "^22.5.0",
+    "nodemon": "^3.1.4",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4"
+  }
+}
