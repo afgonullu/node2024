@@ -8,7 +8,10 @@
     "build": "swc src -d build",
     "start": "node build/index.js",
     "dev": "nodemon --exec tsx src/index.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint --ext src/**/*.ts --fix",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "prepush": "npm run type-check && npm run lint && npm run prettier-format"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +20,16 @@
     "@swc/cli": "^0.4.0",
     "@swc/core": "^1.7.14",
     "@types/node": "^22.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.2.1",
     "nodemon": "^3.1.4",
+    "prettier": "^3.3.3",
+    "prettier-plugin-organize-imports": "^4.0.0",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4"
   }

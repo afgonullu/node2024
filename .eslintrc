@@ -1,0 +1,29 @@
+{
+  "extends": [
+    "airbnb-typescript/base",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
+  ],
+  "plugins": ["@typescript-eslint", "prettier", "import"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "mongo": true,
+    "es2021": true,
+  },
+  "rules": {
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": false,
+      },
+    ],
+    "@typescript-eslint/require-await": "off",
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+  },
+}
