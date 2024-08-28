@@ -6,6 +6,8 @@ dotenv.config();
 
 const config = {
   PORT: get('PORT').required().asIntPositive(),
+  SUPER_ADMIN_PASSWORD: get('SUPER_ADMIN_PASSWORD').required().asString(),
+  JWT_SECRET: get('JWT_SECRET').required().asString(),
 };
 
 export default config;

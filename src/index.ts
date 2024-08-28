@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import config from './lib/config';
+import routes from './controllers';
 import { logger, stream } from './utils/logger';
 import { errorHandler, unknownEndpoint } from './middlewares';
 
@@ -19,6 +20,8 @@ app.get('/ping', (_req, res) => {
   logger.info('someone pinged here');
   res.send('pong');
 });
+
+app.use(routes);
 
 app.use(unknownEndpoint);
 
