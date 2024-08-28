@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import config from './lib/config';
 import { logger, stream } from './utils/logger';
+import { errorHandler, unknownEndpoint } from './middlewares';
 
 require('express-async-errors');
 
@@ -18,6 +19,10 @@ app.get('/ping', (_req, res) => {
   logger.info('someone pinged here');
   res.send('pong');
 });
+
+app.use(unknownEndpoint);
+
+app.use(errorHandler);
 
 app.listen(config.PORT, () => {
   logger.info(`Server running on port ${config.PORT}`);
