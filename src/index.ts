@@ -6,10 +6,13 @@ import config from './lib/config';
 import routes from './controllers';
 import { logger, stream } from './utils/logger';
 import { errorHandler, unknownEndpoint } from './middlewares';
+import { createServer } from 'http';
+import setupWebSocketServer from './controllers/websocketServer';
 
 require('express-async-errors');
 
 const app = express();
+const server = createServer(app);
 
 app.use(helmet());
 app.use(morgan('combined', { stream }));
@@ -23,10 +26,13 @@ app.get('/ping', (_req, res) => {
 
 app.use(routes);
 
+// Set up WebSocket server
+setupWebSocketServer(server);
+
 app.use(unknownEndpoint);
 
 app.use(errorHandler);
 
-app.listen(config.PORT, () => {
+server.listen(config.PORT, () => {
   logger.info(`Server running on port ${config.PORT}`);
 });

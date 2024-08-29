@@ -8,7 +8,7 @@ if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is not set');
 }
 
-const authMiddleware = (req: ExtendedRequest, _res: Response, next: NextFunction) => {
+const authMiddleware = async (req: ExtendedRequest, _res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
 

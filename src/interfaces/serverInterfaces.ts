@@ -1,4 +1,14 @@
 import { Request, Response } from 'express';
+import { WebSocket } from 'ws';
+
+interface WebSocketMetadata {
+  user: string;
+  role: UserRole;
+}
+
+interface ExtendedWebSocket extends WebSocket {
+  metadata?: WebSocketMetadata;
+}
 
 interface ExtendedRequest extends Request {
   role?: UserRole;
@@ -51,4 +61,4 @@ class ServerError<T = Record<string, unknown>> extends Error implements ServerRe
 
 type ExtendedResponse<T> = Response<ServerResponse<T>>;
 
-export { ServerResponse, ServerError, UserRole, ExtendedRequest, JWTPayload, ExtendedResponse };
+export { ServerResponse, ServerError, UserRole, ExtendedRequest, JWTPayload, ExtendedResponse, ExtendedWebSocket };
