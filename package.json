@@ -11,7 +11,8 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint --ext src/**/*.ts --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "prepush": "npm run type-check && npm run lint && npm run prettier-format"
+    "prepush": "npm run type-check && npm run lint && npm run prettier-format",
+    "fetch-prompts": "git submodule update --remote prompts"
   },
   "keywords": [],
   "author": "",
