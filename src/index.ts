@@ -8,6 +8,7 @@ import { logger, stream } from './utils/logger';
 import { errorHandler, unknownEndpoint } from './middlewares';
 import { createServer } from 'http';
 import setupWebSocketServer from './controllers/websocketServer';
+import { setupSwagger } from './controllers/swagger';
 
 require('express-async-errors');
 
@@ -26,6 +27,9 @@ app.get('/ping', (_req, res) => {
 
 app.use(routes);
 
+// Setup Swagger
+setupSwagger(app);
+
 // Set up WebSocket server
 setupWebSocketServer(server);
 
@@ -35,4 +39,5 @@ app.use(errorHandler);
 
 server.listen(config.PORT, () => {
   logger.info(`Server running on port ${config.PORT}`);
+  logger.info(`Swagger UI available at http://localhost:${config.PORT}/api-docs`);
 });
