@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ServerError } from '../interfaces/serverInterfaces';
+import { logger } from '../utils/logger';
 
 const errorHandler = (err: ServerError, _req: Request, res: Response, next: NextFunction): void => {
   if (err instanceof ServerError) {
@@ -10,7 +11,7 @@ const errorHandler = (err: ServerError, _req: Request, res: Response, next: Next
     });
   } else {
     // Handle unexpected errors
-    console.log('Error is not a server error, please use the server error class');
+    logger.error('Error is not a server error, please use the server error class');
     res.status(500).json({
       success: false,
       message: 'An unexpected error occurred',

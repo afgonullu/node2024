@@ -1,10 +1,10 @@
 import { Server as HttpServer } from 'http';
 import { WebSocketServer } from 'ws';
+import { Response } from 'express';
 import { logger } from '../utils/logger';
 import config from '../lib/config';
 import { authMiddleware } from '../middlewares';
 import { ExtendedRequest, ExtendedWebSocket } from '../interfaces/serverInterfaces';
-import { Response } from 'express';
 
 const setupWebSocketServer = (server: HttpServer) => {
   logger.info('Setting up WebSocket server on /ws');
@@ -27,33 +27,35 @@ const setupWebSocketServer = (server: HttpServer) => {
   wss.on('connection', (ws: ExtendedWebSocket, req: ExtendedRequest) => {
     logger.info(`New WebSocket connection on ${config.WS_PATH}`);
 
+    const wsx = ws;
+
     if (!req.user || !req.role) {
       logger.error('User or role not found in request');
-      ws.close(4000, 'User or role not found in request');
+      wsx.close(4000, 'User or role not found in request');
       return;
     }
 
-    ws.metadata = {
+    wsx.metadata = {
       user: req.user,
       role: req.role,
     };
 
-    ws.on('message', (message: string) => {
-      if (!ws.metadata) {
+    wsx.on('message', (message: string) => {
+      if (!wsx.metadata) {
         logger.error('WebSocket metadata not found');
-        ws.close(4000, 'WebSocket metadata not found');
+        wsx.close(4000, 'WebSocket metadata not found');
         return;
       }
 
-      logger.info(`Received: ${message} from ${ws.metadata.user}`);
-      ws.send(`Server received: ${message} from ${ws.metadata.user}`);
+      logger.info(`Received: ${message} from ${wsx.metadata.user}`);
+      wsx.send(`Server received: ${message} from ${wsx.metadata.user}`);
     });
 
-    ws.on('error', (error) => {
+    wsx.on('error', (error) => {
       logger.error('WebSocket error:', error);
     });
 
-    ws.on('close', () => {
+    wsx.on('close', () => {
       logger.info('WebSocket connection closed');
     });
   });

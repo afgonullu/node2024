@@ -2,13 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { createServer } from 'http';
 import config from './lib/config';
 import routes from './controllers';
 import { logger, stream } from './utils/logger';
 import { errorHandler, unknownEndpoint } from './middlewares';
-import { createServer } from 'http';
 import setupWebSocketServer from './controllers/websocketServer';
-import { setupSwagger } from './controllers/swagger';
+import setupSwagger from './controllers/swagger';
 
 require('express-async-errors');
 
