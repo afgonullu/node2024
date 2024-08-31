@@ -1,17 +1,15 @@
 import express, { Request, Response } from 'express';
-import demoRouter from './demo';
 import jwt from 'jsonwebtoken';
+import demoRouter from './demo';
 import config from '../../lib/config';
 import { InternalServerError, UnauthenticatedError } from '../../lib/serverErrors';
 import { ExtendedRequest, UserRole } from '../../interfaces/serverInterfaces';
 import { authMiddleware } from '../../middlewares';
 
-const SUPER_ADMIN_PASSWORD = config.SUPER_ADMIN_PASSWORD;
+const { SUPER_ADMIN_PASSWORD, JWT_SECRET } = config;
 if (!SUPER_ADMIN_PASSWORD) {
   throw new InternalServerError('SUPER_ADMIN_PASSWORD is not set');
 }
-
-const JWT_SECRET = config.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new InternalServerError('JWT_SECRET is not set');
 }

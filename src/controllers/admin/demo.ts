@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { logger } from '../../utils/logger';
 import { InternalServerError } from '../../lib/serverErrors';
 import { ExtendedRequest, ExtendedResponse } from '../../interfaces/serverInterfaces';
+
 const demoRouter = express.Router();
 
 demoRouter.get('/', (_req: Request, res: ExtendedResponse<{ name: string }>) => {
