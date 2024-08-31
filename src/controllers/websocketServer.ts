@@ -1,10 +1,10 @@
 import { Server as HttpServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { Response } from 'express';
-import { logger } from '../utils/logger';
-import config from '../lib/config';
-import { authMiddleware } from '../middlewares';
-import { ExtendedRequest, ExtendedWebSocket } from '../interfaces/serverInterfaces';
+import { logger } from '@utils/logger';
+import config from '@lib/config';
+import { authMiddleware } from '@middlewares/index';
+import { ExtendedRequest, ExtendedWebSocket } from '@interfaces/serverInterfaces';
 
 const setupWebSocketServer = (server: HttpServer) => {
   logger.info('Setting up WebSocket server on /ws');

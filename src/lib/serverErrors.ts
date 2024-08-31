@@ -1,4 +1,4 @@
-import { ServerError } from '../interfaces/serverInterfaces';
+import { ServerError } from '@interfaces/serverInterfaces';
 
 class BadRequestError extends ServerError {
   constructor(message = 'Bad Request', data: Record<string, unknown> = {}) {

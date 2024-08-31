@@ -1,5 +1,5 @@
-import errorHandler from './errorHandler';
-import unknownEndpoint from './unknownEndpoint';
-import authMiddleware from './authMiddleware';
+import errorHandler from '@middlewares/errorHandler';
+import unknownEndpoint from '@middlewares/unknownEndpoint';
+import authMiddleware from '@middlewares/authMiddleware';
 
 export { errorHandler, unknownEndpoint, authMiddleware };

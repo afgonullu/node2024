@@ -1,12 +1,10 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { ExtendedRequest, JWTPayload } from '../interfaces/serverInterfaces';
-import { UnauthenticatedError } from '../lib/serverErrors';
+import { ExtendedRequest, JWTPayload } from '@interfaces/serverInterfaces';
+import { UnauthenticatedError } from '@lib/serverErrors';
+import config from '@lib/config';
 
-const { JWT_SECRET } = process.env;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set');
-}
+const { JWT_SECRET } = config;
 
 const authMiddleware = async (req: ExtendedRequest, _res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;

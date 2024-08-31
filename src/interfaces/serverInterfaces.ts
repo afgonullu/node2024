@@ -55,6 +55,10 @@ class ServerError<T = Record<string, unknown>> extends Error implements ServerRe
   ) {
     super(message);
     this.name = this.constructor.name;
+    this.status = status;
+    this.success = success;
+    this.message = message;
+    this.data = data;
     Object.setPrototypeOf(this, ServerError.prototype);
   }
 }

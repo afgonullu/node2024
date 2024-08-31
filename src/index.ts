@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,8 +10,6 @@ import { logger, stream } from './utils/logger';
 import { errorHandler, unknownEndpoint } from './middlewares';
 import setupWebSocketServer from './controllers/websocketServer';
 import setupSwagger from './controllers/swagger';
-
-require('express-async-errors');
 
 const app = express();
 const server = createServer(app);
