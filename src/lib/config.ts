@@ -8,7 +8,7 @@ const config = {
   PORT: get('PORT').required().asIntPositive(),
   SUPER_ADMIN_PASSWORD: get('SUPER_ADMIN_PASSWORD').required().asString(),
   JWT_SECRET: get('JWT_SECRET').required().asString(),
-  WS_PATH: get('WS_PATH').required().asString(),
+  WS_PATH: get('WS_PATH').required().asString() || '/ws',
 };
 
 export default config;

@@ -7,7 +7,7 @@ import { authMiddleware } from '@middlewares/index';
 import { ExtendedRequest, ExtendedWebSocket } from '@interfaces/serverInterfaces';
 
 const setupWebSocketServer = (server: HttpServer) => {
-  logger.info('Setting up WebSocket server on /ws');
+  logger.info(`Setting up WebSocket server on ${config.WS_PATH}`);
 
   const wss = new WebSocketServer({
     server,
