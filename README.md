@@ -4,6 +4,8 @@
 
 This project is a robust Node.js API template using TypeScript, Express, and WebSocket. It's designed to provide a solid foundation for building scalable and maintainable backend applications.
 
+You can test out the existing demonstrative API and websocket either via Postman or the Swagger UI.
+
 ## Features
 
 - **TypeScript**: Full TypeScript support for enhanced developer experience and type safety.
@@ -21,7 +23,7 @@ This project is a robust Node.js API template using TypeScript, Express, and Web
 
 ## Project Structure
 
-```
+```plaintext
 src/
 ├── clients/ # API clients (e.g., database clients)
 ├── controllers/ # Route handlers
@@ -37,13 +39,13 @@ src/
 
 1. Clone the repository:
 
-   ```
+   ```bash
    git clone <repository-url>
    ```
 
 2. Install dependencies:
 
-   ```
+   ```bash
    npm install
    ```
 
@@ -54,7 +56,7 @@ src/
 
 4. Run the development server:
 
-   ```
+   ```bash
    npm run dev
    ```
 
@@ -104,7 +106,7 @@ To expand on the current codebase, follow these guidelines:
 
    - Add new route files in `src/controllers/`
    - Update `src/controllers/index.ts` to include new routes
-   - Do not execute business logic in the controller, move it to the service
+   - Do not execute business logic in the controller, move it to a service
 
 2. **Business Logic**:
 
@@ -113,35 +115,42 @@ To expand on the current codebase, follow these guidelines:
 
 3. **Database Models**:
 
-   - Add new models in `src/models/`
-   - Use TypeScript interfaces to define model structures
+   - Add models in `prisma/schema.prisma` and
+   - Run `npx prisma migrate dev --name <migration-name>` to create a new migration
 
 4. **Middleware**:
 
    - Create new middleware in `src/middlewares/`
    - Add to routes or app-wide in `src/index.ts`
 
-5. **WebSocket Events**:
-
-   - Extend `src/controllers/websocketServer.ts` for new real-time features
-
-6. **API Documentation**:
+5. **API Documentation**:
 
    - Update `docs/swagger.yml` when adding or modifying endpoints
 
-7. **Environment Variables**:
+6. **Environment Variables**:
 
    - Add new variables to `src/lib/config.ts` and `.env`
 
-8. **Error Handling**:
+7. **Error Handling**:
 
    - Create custom error classes in `src/lib/serverErrors.ts` as needed
 
-9. **Testing**:
-
-   - Add tests for new features (consider adding a testing framework)
-
-10. **Continuous Integration**:
-    - Update CI/CD pipelines when adding new build or deployment steps
-
 Remember to maintain the existing code structure and follow the established patterns for consistency.
+
+## Extending and Using Prisma and DB Client
+
+I prefer Postgres, but you can use any other database supported by Prisma. Check their documentation or you can always ask me as well.
+
+1. Change the schema in `prisma/schema.prisma`
+2. Run `npx prisma migrate dev --name <migration-name>` to create a new migration.
+   - This will create a new migration file in `prisma/migrations/<timestamp>_<migration-name>`
+   - This will also generate and update the prisma client
+3. Use the Prisma client in your services. For example:
+
+```typescript
+import prisma from '@clients/prisma';
+
+const user = await prisma.user.findUnique({
+  where: { id: 1 },
+});
+```

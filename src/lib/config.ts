@@ -9,6 +9,7 @@ const config = {
   SUPER_ADMIN_PASSWORD: get('SUPER_ADMIN_PASSWORD').required().asString(),
   JWT_SECRET: get('JWT_SECRET').required().asString(),
   WS_PATH: get('WS_PATH').required().asString() || '/ws',
+  DATABASE_URL: get('DATABASE_URL').required().asString(),
 };
 
 export default config;
