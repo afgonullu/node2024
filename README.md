@@ -20,6 +20,8 @@ You can test out the existing demonstrative API and websocket either via Postman
 - **Environment Variables**: Secure configuration management.
 - **Code Quality**: ESLint and Prettier for consistent code style.
 - **Hot Reloading**: Nodemon for automatic server restarts during development.
+- **Database**: Prisma as the database ORM.
+- **Strong Linters**: ESLint and Prettier for consistent code style.
 
 ## Project Structure
 
