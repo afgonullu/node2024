@@ -825,7 +825,6 @@ const setupWebSocketServer = (server: HttpServer) => {
 };
 
 export default setupWebSocketServer;
-
 ```
 
 This setup creates a WebSocket server that authenticates connections using the same middleware as the REST API and handles basic message events. This is a basic setup and can be expanded with more features as needed. We will expand on this in the future.
@@ -1130,6 +1129,54 @@ export default prisma;
 - [ ] Change schema in `prisma/schema.prisma`
 - [ ] Run `npx prisma migrate dev`
 
-## Stripe Integration
-
 ## AI agent pipeline, workers, agents
+
+This section of the API implements an AI agent pipeline for generating haikus using LangChain and Anthropic's Claude model. The system is designed with a modular approach, utilizing separate agents for different tasks and a state graph to manage the flow of information.
+
+### Structure
+
+The AI components are organized into the following structure:
+
+```plaintext
+src/llm/
+|-- agents/: Individual AI agents for specific tasks
+|-- flows/: Workflow definitions using LangChain's StateGraph
+|-- graphs/: State definitions for the workflows
+|-- index.ts: Entry point for AI functionalities
+```
+
+### Workflow
+
+The haiku generation workflow is defined in `flows/haikuFlow.ts`. It uses LangChain's StateGraph to create a pipeline with the following steps:
+
+- Find a word (findWord agent)
+- Create a haiku (createHaiku agent)
+- Format the response
+
+The workflow is compiled and exported as `haikuFlow`.
+
+### Usage
+
+The main entry point for the AI functionality is `src/llm/index.ts`. It exports a `generateHaiku` function that takes a message as input and returns the generated haiku.
+
+To use the haiku generation in your API:
+
+```typescript
+import flows from './llm';
+
+// In your route handler or controller
+const haiku = await flows.generateHaiku(userMessage);
+```
+
+### Extensibility
+
+This structure allows for easy extension of AI capabilities:
+
+- Add new agents in the agents directory
+- Define new state graphs in the graphs directory
+- Create new workflows in the flows directory
+- Export new functions in index.ts
+
+By following this pattern, you can add more AI-powered features to your API, such as text summarization, sentiment analysis, or other language tasks.
+
+## Stripe Integration

@@ -5,6 +5,7 @@ import { logger } from '@utils/logger';
 import config from '@lib/config';
 import { authMiddleware } from '@middlewares/index';
 import { ExtendedRequest, ExtendedWebSocket } from '@interfaces/serverInterfaces';
+import flows from 'llm';
 
 const setupWebSocketServer = (server: HttpServer) => {
   logger.info(`Setting up WebSocket server on ${config.WS_PATH}`);
@@ -40,15 +41,18 @@ const setupWebSocketServer = (server: HttpServer) => {
       role: req.role,
     };
 
-    wsx.on('message', (message: string) => {
+    wsx.on('message', async (message: Buffer) => {
       if (!wsx.metadata) {
         logger.error('WebSocket metadata not found');
         wsx.close(4000, 'WebSocket metadata not found');
         return;
       }
 
-      logger.info(`Received: ${message} from ${wsx.metadata.user}`);
-      wsx.send(`Server received: ${message} from ${wsx.metadata.user}`);
+      const messageString = message.toString();
+
+      const haiku = await flows.generateHaiku(messageString);
+
+      wsx.send(haiku);
     });
 
     wsx.on('error', (error) => {

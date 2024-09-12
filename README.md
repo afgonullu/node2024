@@ -8,6 +8,7 @@ You can test out the existing demonstrative API and websocket either via Postman
 
 ## Features
 
+- **AI**: LangChain for AI workflows.
 - **TypeScript**: Full TypeScript support for enhanced developer experience and type safety.
 - **Express.js**: Fast, unopinionated, minimalist web framework for Node.js.
 - **WebSocket Support**: Real-time, bidirectional and event-based communication.
@@ -35,6 +36,7 @@ src/
 ├── models/ # Database models
 ├── services/ # Business logic
 └── utils/ # Utility functions
+└── llm/ # LangChain AI workflows: agents, flows, graphs, etc.
 ```
 
 ## Getting Started
@@ -110,30 +112,37 @@ To expand on the current codebase, follow these guidelines:
    - Update `src/controllers/index.ts` to include new routes
    - Do not execute business logic in the controller, move it to a service
 
-2. **Business Logic**:
+2. **AI**:
+
+   - Add new agents, flows, graphs in `src/llm/`
+     - Agents are the LLM agents that are used to generate responses
+     - Flows are the LLM workflows that are used to generate responses, they can utilize agents, tools, and other resources
+     - Graphs are the LLM state graphs that are used to generate responses, they are used to track the state of the LLM
+
+3. **Business Logic**:
 
    - Implement new services in `src/services/`
    - Keep controllers thin, move complex logic to services
 
-3. **Database Models**:
+4. **Database Models**:
 
    - Add models in `prisma/schema.prisma` and
    - Run `npx prisma migrate dev --name <migration-name>` to create a new migration
 
-4. **Middleware**:
+5. **Middleware**:
 
    - Create new middleware in `src/middlewares/`
    - Add to routes or app-wide in `src/index.ts`
 
-5. **API Documentation**:
+6. **API Documentation**:
 
    - Update `docs/swagger.yml` when adding or modifying endpoints
 
-6. **Environment Variables**:
+7. **Environment Variables**:
 
    - Add new variables to `src/lib/config.ts` and `.env`
 
-7. **Error Handling**:
+8. **Error Handling**:
 
    - Create custom error classes in `src/lib/serverErrors.ts` as needed
 
