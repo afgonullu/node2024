@@ -35,7 +35,7 @@ src/
 ├── middlewares/ # Custom middlewares
 ├── models/ # Database models
 ├── services/ # Business logic
-└── utils/ # Utility functions
+├── utils/ # Utility functions
 └── llm/ # LangChain AI workflows: agents, flows, graphs, etc.
 ```
 

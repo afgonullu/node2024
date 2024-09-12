@@ -1138,11 +1138,128 @@ This section of the API implements an AI agent pipeline for generating haikus us
 The AI components are organized into the following structure:
 
 ```plaintext
-src/llm/
-|-- agents/: Individual AI agents for specific tasks
-|-- flows/: Workflow definitions using LangChain's StateGraph
-|-- graphs/: State definitions for the workflows
-|-- index.ts: Entry point for AI functionalities
+src/
+├── agents/: Individual AI agents for specific tasks
+├── flows/: Workflow definitions using LangChain's StateGraph
+├── graphs/: State definitions for the workflows
+├── index.ts: Entry point for AI functionalities
+```
+
+- [ ] Create a `haiku.graph.ts` file in the `graphs` directory
+
+```typescript
+import { Annotation } from '@langchain/langgraph';
+import { BaseMessage } from '@langchain/core/messages';
+
+const HaikuFlowState = Annotation.Root({
+  messages: Annotation<BaseMessage[]>({
+    reducer: (x, y) => x.concat(y),
+  }),
+  suggestedWord: Annotation<string>(),
+  haiku: Annotation<string>(),
+});
+
+export default HaikuFlowState;
+```
+
+- [ ] Create a `haikuAgent.ts` file in the `agents` directory
+
+```typescript
+import { ChatAnthropic } from '@langchain/anthropic';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import HaikuFlowState from '../graphs/haiku.graph';
+
+const model = new ChatAnthropic({
+  modelName: 'claude-3-haiku-20240307',
+  temperature: 0.7,
+});
+
+const haikuPrompt = ChatPromptTemplate.fromTemplate(
+  `For given messages, create a haiku.
+  Messages: {messages}
+  Include the word chosen by the user.
+  Also include the word: {suggestedWord}
+  Respond with only the haiku, no additional text.`,
+);
+
+const chain = haikuPrompt.pipe(model);
+
+const createHaiku = async (state: typeof HaikuFlowState.State) => {
+  const messages = state.messages.map((message) => message.content).join('\n');
+  const response = await chain.invoke({
+    messages,
+    suggestedWord: state.suggestedWord,
+  });
+  return { haiku: response.content };
+};
+
+export default createHaiku;
+```
+
+- [ ] Create a `findWord.ts` file in the `agents` directory
+
+```typescript
+import { ChatAnthropic } from '@langchain/anthropic';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import HaikuFlowState from '../graphs/haiku.graph';
+
+const model = new ChatAnthropic({
+  modelName: 'claude-3-haiku-20240307',
+  temperature: 0.7,
+});
+
+const wordFinderPrompt = ChatPromptTemplate.fromTemplate(
+  `Based on the following message history, suggest an appropriate and interesting word that could be used in a haiku: "{messages}"
+  Respond with only the word, No Haiku, No additional text.`,
+);
+
+const chain = wordFinderPrompt.pipe(model);
+
+const findWordModel = async (state: typeof HaikuFlowState.State) => {
+  const messages = state.messages.map((message) => message.content).join('\n');
+  const response = await chain.invoke({ messages });
+
+  const suggestedWord = response.content;
+
+  return { suggestedWord };
+};
+
+export default findWordModel;
+```
+
+- [ ] Create a `haikuFlow.ts` file in the `flows` directory
+
+```typescript
+import { MemorySaver, StateGraph } from '@langchain/langgraph';
+import { AIMessage } from '@langchain/core/messages';
+import { createHaiku, findWord } from 'llm/agents';
+import HaikuFlowState from '../graphs/haiku.graph';
+
+// Define the function to format the response
+const formatResponse = async (state: typeof HaikuFlowState.State) => {
+  const { haiku, suggestedWord } = state;
+  const formattedResponse = `I've chosen the word "${suggestedWord}" for your haiku. Here it is:\n\n${haiku}`;
+  return { messages: [new AIMessage(formattedResponse)] };
+};
+
+// Create the graph
+const workflow = new StateGraph(HaikuFlowState)
+  .addNode('find_word', findWord)
+  .addNode('create_haiku', createHaiku)
+  .addNode('format_response', formatResponse)
+  .addEdge('__start__', 'find_word')
+  .addEdge('find_word', 'create_haiku')
+  .addEdge('create_haiku', 'format_response')
+  .addEdge('format_response', '__end__');
+
+const checkPointer = new MemorySaver();
+
+// Compile the graph
+const haikuFlow = workflow.compile({
+  checkpointer: checkPointer,
+});
+
+export default haikuFlow;
 ```
 
 ### Workflow
@@ -1159,7 +1276,7 @@ The workflow is compiled and exported as `haikuFlow`.
 
 The main entry point for the AI functionality is `src/llm/index.ts`. It exports a `generateHaiku` function that takes a message as input and returns the generated haiku.
 
-To use the haiku generation in your API:
+To use the haiku generation in your API or WebSocket server:
 
 ```typescript
 import flows from './llm';
