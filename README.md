@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a robust Node.js API template using TypeScript, Express, and WebSocket. It's designed to provide a solid foundation for building scalable and maintainable backend applications.
+This project is a robust Node.js API template using TypeScript, Express, and Socket.IO AND WebSocket. (Both implementations are included) It's designed to provide a solid foundation for building scalable and maintainable backend applications.
 
 You can test out the existing demonstrative API and websocket either via Postman or the Swagger UI.
 
@@ -12,6 +12,7 @@ You can test out the existing demonstrative API and websocket either via Postman
 - **TypeScript**: Full TypeScript support for enhanced developer experience and type safety.
 - **Express.js**: Fast, unopinionated, minimalist web framework for Node.js.
 - **WebSocket Support**: Real-time, bidirectional and event-based communication.
+- **Socket.IO Support**: Real-time, bidirectional and event-based communication with extra features.
 - **Consistent Server Response**: Consistent server response, whether it is an error or a success.
 - **Error Handling**: Centralized error handling, automatically catch errors and handle gracefully.
 - **Extensible Custom Errors**: Extensible custom errors, you can create new errors and add new error codes, attach messages and metadata to existing errors.
@@ -78,7 +79,14 @@ src/
 
 ## WebSocket Endpoint
 
-This template includes WebSocket support for real-time, bidirectional communication. The WebSocket server is set up in `src/controllers/websocketServer.ts`.
+Use one or the other, not both. They use the same path, and implementations are more or less the same.
+
+This template includes WebSocket support for real-time, bidirectional communication.
+
+- The WebSocket server is set up in `src/controllers/websocketServer.ts`.
+- The Socket.IO server is set up in `src/controllers/socketServer.ts`.
+
+### WebSocket Implementation
 
 - **WebSocket Path**: The WebSocket endpoint is configured using the `WS_PATH` environment variable. By default, it's set to `/ws`.
 - **Authentication**: WebSocket connections are authenticated using the same JWT-based authentication as the REST API.
@@ -101,6 +109,18 @@ To expand WebSocket functionality:
 1. Modify `src/controllers/websocketServer.ts` to add new event handlers or change existing ones.
 2. Update the `ExtendedWebSocket` interface in `src/interfaces/serverInterfaces.ts` if you need to add more metadata to the WebSocket connection.
 3. Implement client-side WebSocket handling in your frontend application to interact with these endpoints.
+
+### Socket.IO Implementation
+
+- **Socket.IO Path**: The Socket.IO endpoint is configured using the `WS_PATH` environment variable. By default, it's set to `/ws`.
+- **Authentication**: Socket.IO connections are authenticated using the same JWT-based authentication as the REST API.
+- **Connection**: To connect to the Socket.IO server, use:
+
+  ```javascript
+  const socket = io('http://localhost:3000/ws');
+  ```
+
+  You can specify custom channels to join and listen for events on specific channels. Check out differences in the implementations.
 
 ## Expanding the Codebase
 
