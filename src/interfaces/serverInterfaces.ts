@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import { WebSocket } from 'ws';
 
+export interface MessageHandler {
+  (payload: string, ws: ExtendedWebSocket): Promise<void> | void;
+}
+
 interface WebSocketMetadata {
   user: string;
   role: UserRole;

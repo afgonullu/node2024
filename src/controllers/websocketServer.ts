@@ -4,8 +4,43 @@ import { Response } from 'express';
 import { logger } from '@utils/logger';
 import config from '@lib/config';
 import { authMiddleware } from '@middlewares/index';
-import { ExtendedRequest, ExtendedWebSocket } from '@interfaces/serverInterfaces';
+import { ExtendedRequest, ExtendedWebSocket, MessageHandler } from '@interfaces/serverInterfaces';
 import flows from 'llm';
+
+const messageHandlers: Record<string, MessageHandler> = {
+  haiku: async (message: string, ws: ExtendedWebSocket) => {
+    const haiku = await flows.generateHaiku(message);
+    ws.send(haiku);
+  },
+  echo: (message: string, ws: ExtendedWebSocket) => {
+    ws.send(`Echo: ${message}`);
+  },
+  // Add more handlers as needed
+};
+
+const handleMessage = async (message: string, ws: ExtendedWebSocket) => {
+  // check if message is valid json
+  if (!message.startsWith('{') || !message.endsWith('}')) {
+    logger.warn('Invalid message format');
+    ws.send(JSON.stringify({ error: 'Invalid message format' }));
+    return;
+  }
+
+  const { type, payload } = JSON.parse(message) as { type: string; payload: string };
+
+  if (!type || !payload) {
+    logger.warn('Invalid message format');
+    ws.send(JSON.stringify({ error: 'Invalid message format' }));
+    return;
+  }
+
+  if (type in messageHandlers) {
+    await messageHandlers[type](payload, ws);
+  } else {
+    logger.warn(`Unknown message type: ${type}`);
+    ws.send(JSON.stringify({ error: 'Unknown message type' }));
+  }
+};
 
 const setupWebSocketServer = (server: HttpServer) => {
   logger.info(`Setting up WebSocket server on ${config.WS_PATH}`);
@@ -48,11 +83,7 @@ const setupWebSocketServer = (server: HttpServer) => {
         return;
       }
 
-      const messageString = message.toString();
-
-      const haiku = await flows.generateHaiku(messageString);
-
-      wsx.send(haiku);
+      await handleMessage(message.toString(), wsx);
     });
 
     wsx.on('error', (error) => {
