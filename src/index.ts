@@ -8,8 +8,9 @@ import config from './lib/config';
 import routes from './controllers';
 import { logger, stream } from './utils/logger';
 import { errorHandler, unknownEndpoint } from './middlewares';
-import setupWebSocketServer from './controllers/websocketServer';
+// import setupWebSocketServer from './controllers/websocketServer';
 import setupSwagger from './controllers/swagger';
+import setupSocketServer from './controllers/socketServer';
 
 const app = express();
 const server = createServer(app);
@@ -29,8 +30,11 @@ app.use(routes);
 // Setup Swagger
 setupSwagger(app);
 
-// Set up WebSocket server
-setupWebSocketServer(server);
+// // Set up WebSocket server
+// setupWebSocketServer(server);
+
+// Set up Socket.IO server
+setupSocketServer(server);
 
 app.use(unknownEndpoint);
 

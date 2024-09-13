@@ -1,17 +1,32 @@
 import { Request, Response } from 'express';
+import { Socket } from 'socket.io';
 import { WebSocket } from 'ws';
+import { IncomingMessage } from 'http';
 
-export interface MessageHandler {
+interface SocketMessage {
+  type: string;
+  payload: string;
+}
+
+interface ExtendedSocket extends Socket {
+  request: IncomingMessage & {
+    user: string;
+    role: UserRole;
+  };
+  metadata?: SocketMetaData;
+}
+
+interface MessageHandler {
   (payload: string, ws: ExtendedWebSocket): Promise<void> | void;
 }
 
-interface WebSocketMetadata {
+interface SocketMetaData {
   user: string;
   role: UserRole;
 }
 
 interface ExtendedWebSocket extends WebSocket {
-  metadata?: WebSocketMetadata;
+  metadata?: SocketMetaData;
 }
 
 interface ExtendedRequest extends Request {
@@ -69,4 +84,16 @@ class ServerError<T = Record<string, unknown>> extends Error implements ServerRe
 
 type ExtendedResponse<T> = Response<ServerResponse<T>>;
 
-export { ServerResponse, ServerError, UserRole, ExtendedRequest, JWTPayload, ExtendedResponse, ExtendedWebSocket };
+export {
+  ServerResponse,
+  ServerError,
+  UserRole,
+  ExtendedRequest,
+  JWTPayload,
+  ExtendedResponse,
+  ExtendedWebSocket,
+  ExtendedSocket,
+  SocketMetaData,
+  MessageHandler,
+  SocketMessage,
+};
